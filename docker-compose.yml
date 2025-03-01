@@ -37,6 +37,7 @@ services:
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
     networks:
       - elk
+      - kind
     depends_on:
       - elasticsearch
 
@@ -54,6 +55,7 @@ services:
     environment:
       node.name: elasticsearch
       ES_JAVA_OPTS: -Xms512m -Xmx512m
+      _JAVA_OPTIONS: -XX:UseSVE=0
       # Bootstrap password.
       # Used to initialize the keystore during the initial startup of
       # Elasticsearch. Ignored on subsequent runs.
@@ -63,6 +65,7 @@ services:
       discovery.type: single-node
     networks:
       - elk
+      - kind
     restart: unless-stopped
 
   logstash:
@@ -83,6 +86,7 @@ services:
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
     networks:
       - elk
+      - kind
     depends_on:
       - elasticsearch
     restart: unless-stopped
@@ -100,6 +104,7 @@ services:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
       - elk
+      - kind
     depends_on:
       - elasticsearch
     restart: unless-stopped
@@ -107,6 +112,8 @@ services:
 networks:
   elk:
     driver: bridge
+  kind:
+    external: true
 
 volumes:
   elasticsearch:
